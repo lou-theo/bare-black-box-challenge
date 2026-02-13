@@ -1,0 +1,23 @@
+category = "ids"
+category_description = "Validation des identifiants (unicite et collision modulo 65536)."
+
+[[case]]
+id = "IDS-001"
+description = "ID duplique direct rejete."
+input = "1 2 3 4 1 6 1 8\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "IDS-002"
+description = "ID zero accepte."
+input = "0 2 1 5\n"
+expected_output = "5 \n"
+expected_code = 0
+
+[[case]]
+id = "IDS-003"
+description = "Collision d'ID modulo 65536 rejetee."
+input = "1 2 1 10 65537 10 1 20\n"
+expected_output = "X\n"
+expected_code = 0

@@ -1,0 +1,72 @@
+category = "calendar"
+category_description = "Validation du champ start (encodage year/day, bissextiles, bornes hautes)."
+
+[[case]]
+id = "CAL-001"
+description = "Year=8 bissextile, day=365 valide."
+input = "1 4461 1 99\n"
+expected_output = "99 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-002"
+description = "Year=9 non bissextile, day=365 invalide."
+input = "1 4973 1 99\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-003"
+description = "Year=0 bissextile, day=365 valide."
+input = "1 365 1 7\n"
+expected_output = "7 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-004"
+description = "Year=1 non bissextile, day=365 invalide."
+input = "1 877 1 7\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-005"
+description = "Day=366 invalide."
+input = "1 366 1 7\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-006"
+description = "Year=99, day=364 valide."
+input = "1 51052 1 7\n"
+expected_output = "7 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-007"
+description = "Year=99, day=365 invalide."
+input = "1 51053 1 7\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-008"
+description = "Year=100 hors borne, invalide."
+input = "1 51200 1 7\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-009"
+description = "Year=96 bissextile, day=365 valide."
+input = "1 49517 1 9\n"
+expected_output = "9 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-010"
+description = "Year=97 non bissextile, day=365 invalide."
+input = "1 50029 1 9\n"
+expected_output = "X\n"
+expected_code = 0

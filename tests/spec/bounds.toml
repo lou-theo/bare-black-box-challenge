@@ -1,0 +1,44 @@
+category = "bounds"
+category_description = "Validation des bornes duration/value."
+
+[[case]]
+id = "BND-001"
+description = "Duration=0 invalide."
+input = "1 2 0 4\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "BND-002"
+description = "Duration=10001 invalide."
+input = "1 2 10001 4\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "BND-003"
+description = "Value=0 invalide."
+input = "1 2 1 0\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "BND-004"
+description = "Value=100001 invalide."
+input = "1 2 1 100001\n"
+expected_output = "X\n"
+expected_code = 0
+
+[[case]]
+id = "BND-005"
+description = "Duration=10000 valide."
+input = "1 0 10000 7\n"
+expected_output = "7 \n"
+expected_code = 0
+
+[[case]]
+id = "BND-006"
+description = "Value=100000 valide."
+input = "1 0 1 100000\n"
+expected_output = "100000 \n"
+expected_code = 0

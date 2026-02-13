@@ -29,20 +29,47 @@ You will need a C compiler. The library mos6502 (created by Gianluca Ghettini) w
 ### Tests
 
 This repository includes a local black-box test suite for the `bin/bbr` binary.
-Each test feeds an input file to `stdin` and compares:
+Tests are defined in TOML files under `tests/spec/`, grouped by category:
 
-- program `stdout` byte-for-byte (including trailing spaces and newlines)
-- exit code (`0` by default, or overridden with an optional `.code` file)
+- `tests/spec/parser.toml`
+- `tests/spec/ids.toml`
+- `tests/spec/calendar.toml`
+- `tests/spec/bounds.toml`
+- `tests/spec/scheduling.toml`
 
 Run all tests with:
 
 `make test`
 
-To add a test case, create files in `tests/cases/` using the naming convention:
+The test runner is:
 
-1. `NNN_name.in` for input
-2. `NNN_name.out` for exact expected output
-3. optional `NNN_name.code` for expected exit code
+`python3 tests/run.py`
+
+Useful filters:
+
+- list all categories and cases: `python3 tests/run.py --list`
+- run one category: `python3 tests/run.py --category calendar`
+- run one case: `python3 tests/run.py --case-id CAL-001`
+
+Case template:
+
+```toml
+category = "calendar"
+category_description = "Validation start (year/day, bissextiles, bornes)."
+
+[[case]]
+id = "CAL-001"
+description = "Année bissextile: day=365 valide pour year=8."
+input = "1 4461 1 99\n"
+expected_output = "99 \n"
+expected_code = 0
+```
+
+Notes:
+
+- `input` and `expected_output` are exact strings.
+- keep explicit `\n` when needed.
+- trailing spaces in `expected_output` are significant and checked byte-for-byte.
 
 ### Step 2: If you are a developer and/or a tester:
 

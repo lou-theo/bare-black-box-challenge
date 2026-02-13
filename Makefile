@@ -4,4 +4,4 @@ bbr:
 	cc $(CFLAGS) src/bare.cpp -o bin/bbr
 
 test: bbr
-	sh tests/run.sh
+	python3 tests/run.py
