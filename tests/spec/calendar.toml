@@ -70,3 +70,38 @@ description = "Year=97 non bissextile, day=365 invalide."
 input = "1 50029 1 9\n"
 expected_output = "Invalid input\n"
 expected_code = 0
+
+[[case]]
+id = "CAL-011"
+description = "Borne basse: Year=0, day=0 valide."
+input = "1 0 1 11\n"
+expected_output = "11 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-012"
+description = "Borne haute incluse: Year=99, day=0 valide."
+input = "1 50688 1 11\n"
+expected_output = "11 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-013"
+description = "Borne haute exclue: Year=100, day=365 invalide."
+input = "1 51565 1 11\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-014"
+description = "Annee largement hors borne (Year=127) invalide."
+input = "1 65024 1 11\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-015"
+description = "Annee tres grande (Year=255) invalide."
+input = "1 130560 1 11\n"
+expected_output = "Invalid input\n"
+expected_code = 0
