@@ -3,23 +3,23 @@ category_description = "Validation du parsing ligne par ligne (format, tokens, s
 
 [[case]]
 id = "PAR-001"
-description = "Entree vide -> X."
+description = "Entree vide -> Invalid input."
 input = ""
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "PAR-002"
-description = "Ligne avec nombre de tokens non multiple de 4 -> X."
+description = "Ligne avec nombre de tokens non multiple de 4 -> Invalid input."
 input = "1\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "PAR-003"
-description = "Token non numerique -> X."
+description = "Token non numerique -> Invalid input."
 input = "1 2 a 4\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
@@ -31,9 +31,9 @@ expected_code = 0
 
 [[case]]
 id = "PAR-005"
-description = "Seconde ligne invalide -> X."
+description = "Seconde ligne invalide -> Invalid input."
 input = "1 2 3 4\n5 6 7\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
@@ -54,14 +54,14 @@ expected_code = 0
 id = "PAR-008"
 description = "Nombre negatif rejete."
 input = "-1 2 3 4\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "PAR-009"
 description = "Signe plus explicite rejete."
 input = "+1 2 3 4\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
@@ -75,5 +75,5 @@ expected_code = 0
 id = "PAR-011"
 description = "Longueur de ligne 256 caracteres rejetee."
 input = "65535 1 1 1 2 2 1 1 3 3 1 1 4 4 1 1 5 5 1 1 6 6 1 1 7 7 1 1 8 8 1 1 9 9 1 1 10 10 1 1 11 11 1 1 12 12 1 1 13 13 1 1 14 14 1 1 15 15 1 1 16 16 1 1 17 17 1 1 18 18 1 1 19 19 1 1 20 20 1 1 21 21 1 1 22 22 1 1 23 23 1 1 24 24 1 1 25 25 1 1 26 26 1 1 27 27 1 10\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0

@@ -5,7 +5,7 @@ category_description = "Validation des identifiants (unicite et collision modulo
 id = "IDS-001"
 description = "ID duplique direct rejete."
 input = "1 2 3 4 1 6 1 8\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
@@ -19,5 +19,5 @@ expected_code = 0
 id = "IDS-003"
 description = "Collision d'ID modulo 65536 rejetee."
 input = "1 2 1 10 65537 10 1 20\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0

@@ -5,28 +5,28 @@ category_description = "Validation des bornes duration/value."
 id = "BND-001"
 description = "Duration=0 invalide."
 input = "1 2 0 4\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "BND-002"
 description = "Duration=10001 invalide."
 input = "1 2 10001 4\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "BND-003"
 description = "Value=0 invalide."
 input = "1 2 1 0\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "BND-004"
 description = "Value=100001 invalide."
 input = "1 2 1 100001\n"
-expected_output = "X\n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
