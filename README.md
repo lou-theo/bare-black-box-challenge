@@ -26,6 +26,24 @@ In a terminal, type
 
 You will need a C compiler. The library mos6502 (created by Gianluca Ghettini) which has been adapted for simple I/Os resides in the `lib` folder. 
 
+### Tests
+
+This repository includes a local black-box test suite for the `bin/bbr` binary.
+Each test feeds an input file to `stdin` and compares:
+
+- program `stdout` byte-for-byte (including trailing spaces and newlines)
+- exit code (`0` by default, or overridden with an optional `.code` file)
+
+Run all tests with:
+
+`make test`
+
+To add a test case, create files in `tests/cases/` using the naming convention:
+
+1. `NNN_name.in` for input
+2. `NNN_name.out` for exact expected output
+3. optional `NNN_name.code` for expected exit code
+
 ### Step 2: If you are a developer and/or a tester:
 
 Your task is to study this program code and/or its execution, and answer the following questions:
