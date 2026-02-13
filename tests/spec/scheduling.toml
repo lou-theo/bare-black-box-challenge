@@ -49,3 +49,17 @@ description = "Combinaison de deux intervalles > intervalle unique."
 input = "1 0 10 100 2 0 5 60 3 5 5 60\n"
 expected_output = "120 \n"
 expected_code = 0
+
+[[case]]
+id = "SCH-008"
+description = "Deux intervalles separes de 128 ans ne doivent pas se chevaucher."
+input = "1 0 1 10 2 65536 1 20\n"
+expected_output = "30 \n"
+expected_code = 0
+
+[[case]]
+id = "SCH-009"
+description = "Deux intervalles tres eloignes (year=32 vs year=100000) doivent etre compatibles."
+input = "1 16384 1 10 2 51200000 1 20\n"
+expected_output = "30 \n"
+expected_code = 0

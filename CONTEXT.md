@@ -29,6 +29,8 @@ Lancer en interactif:
 
 En clair: le C++ sert surtout de "machine virtuelle", et le comportement métier est dans le blob 6502.
 
+Exception importante: pour les entrées contenant des années >= 128, `src/bare.cpp` applique un pré-traitement des intervalles avant exécution du blob, afin d'éliminer la cyclicité temporelle 128 ans de la représentation interne 16 bits.
+
 ## Modèle d'entrée/sortie
 
 Dans `src/bare.cpp`:
@@ -140,7 +142,7 @@ Le champ `start` n'est pas une date texte, c'est un entier encodé:
 
 Règle observée pour valider `start`:
 
-1. `year` doit être dans `0..99`.
+1. `year` doit être dans `0..100000`.
 2. Si `year % 4 == 0` (année bissextile), alors `day <= 365`.
 3. Sinon, `day <= 364`.
 
@@ -188,12 +190,13 @@ printf "1 2413 2 10 2 2560 1 20\n" | ./bin/bbr
 3. Ils se chevauchent, donc incompatibles.
 4. Le programme garde la meilleure valeur seule: sortie `20`.
 
-Résultat de campagne de tests bissextiles:
+Résultat de campagne de tests bissextiles et bornes:
 
-1. `day=365` accepté sur 25 années (`0,4,8,...,96`).
-2. `day=365` rejeté sur 75 années non bissextiles.
-3. `day=366` rejeté sur toutes les années.
-4. Tests de transition fin d'année / début d'année: comportement cohérent.
+1. `day=365` est accepté pour des années bissextiles testées, y compris `year=100000`.
+2. `day=365` est rejeté pour des années non bissextiles testées (ex: `year=99999`).
+3. `day=366` est rejeté.
+4. `year=100001` est rejeté (borne haute exclue).
+5. Les cas de planification séparés de 128 ans (ou plus) sont désormais distingués correctement (plus de chevauchement artificiel cyclique).
 
 ## Remarque
 

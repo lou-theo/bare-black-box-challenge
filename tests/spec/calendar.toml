@@ -1,5 +1,5 @@
 category = "calendar"
-category_description = "Validation du champ start (encodage year/day, bissextiles, bornes hautes)."
+category_description = "Validation du champ start (encodage year/day, bissextiles, borne annee <= 100000)."
 
 [[case]]
 id = "CAL-001"
@@ -52,9 +52,9 @@ expected_code = 0
 
 [[case]]
 id = "CAL-008"
-description = "Year=100 hors borne, invalide."
+description = "Year=100, day=0 valide."
 input = "1 51200 1 7\n"
-expected_output = "Invalid input\n"
+expected_output = "7 \n"
 expected_code = 0
 
 [[case]]
@@ -87,21 +87,63 @@ expected_code = 0
 
 [[case]]
 id = "CAL-013"
-description = "Borne haute exclue: Year=100, day=365 invalide."
+description = "Year=100 bissextile, day=365 valide."
 input = "1 51565 1 11\n"
-expected_output = "Invalid input\n"
+expected_output = "11 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-014"
-description = "Annee largement hors borne (Year=127) invalide."
+description = "Year=127, day=0 valide."
 input = "1 65024 1 11\n"
-expected_output = "Invalid input\n"
+expected_output = "11 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-015"
-description = "Annee tres grande (Year=255) invalide."
+description = "Year=255, day=0 valide."
 input = "1 130560 1 11\n"
+expected_output = "11 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-016"
+description = "Year=99999 non bissextile, day=364 valide."
+input = "1 51199852 1 13\n"
+expected_output = "13 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-017"
+description = "Year=99999 non bissextile, day=365 invalide."
+input = "1 51199853 1 13\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-018"
+description = "Borne haute incluse: Year=100000, day=0 valide."
+input = "1 51200000 1 17\n"
+expected_output = "17 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-019"
+description = "Borne haute incluse: Year=100000 bissextile, day=365 valide."
+input = "1 51200365 1 17\n"
+expected_output = "17 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-020"
+description = "Year=100000, day=366 invalide."
+input = "1 51200366 1 17\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-021"
+description = "Borne haute exclue: Year=100001, day=0 invalide."
+input = "1 51200512 1 17\n"
 expected_output = "Invalid input\n"
 expected_code = 0
