@@ -140,6 +140,13 @@ Le champ `start` n'est pas une date texte, c'est un entier encodé:
 1. `year = start >> 9`
 2. `day = start & 0x1FF` (donc `0..511`)
 
+Interpretation importante: `day` est un index de jour sur base 0.
+
+1. `day=0` = premier jour de l'annee.
+2. Annee non bissextile: derniers index valides `0..364` (365 jours).
+3. Annee bissextile: derniers index valides `0..365` (366 jours).
+4. `day=366` serait un 367e jour: toujours invalide.
+
 Règle observée pour valider `start`:
 
 1. `year` doit être dans `0..100000`.
@@ -199,6 +206,12 @@ Résultat de campagne de tests bissextiles et bornes:
 4. `day=366` est rejeté.
 5. `year=100001` est rejeté (borne haute exclue).
 6. Les cas de planification séparés de 128 ans (ou plus) sont désormais distingués correctement (plus de chevauchement artificiel cyclique).
+
+Pourquoi on voit souvent 364 / 365 / 366 dans les tests:
+
+1. `364` teste la borne haute d'une annee non bissextile (doit passer).
+2. `365` discrimine bissextile vs non bissextile (passe seulement en bissextile).
+3. `366` teste le depassement absolu (doit toujours echouer).
 
 ## Remarque
 

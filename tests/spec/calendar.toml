@@ -1,5 +1,12 @@
 category = "calendar"
-category_description = "Validation du champ start (encodage year/day, regles bissextiles gregoriennes, borne annee <= 100000)."
+category_description = "Validation du champ start (year/day, index day sur base 0, regles bissextiles gregoriennes, borne annee <= 100000)."
+
+# Convention importante pour ces cas:
+# - day est un index de jour dans l'annee (base 0), pas un numero humain 1..365/366
+# - annee normale: day valide dans 0..364 (365 jours au total)
+# - annee bissextile: day valide dans 0..365 (366 jours au total)
+# - day=366 signifierait un 367e jour et doit toujours etre invalide
+# - leap (gregorien): divisible par 4, sauf siecles non divisibles par 400
 
 [[case]]
 id = "CAL-001"
@@ -31,21 +38,21 @@ expected_code = 0
 
 [[case]]
 id = "CAL-005"
-description = "Day=366 invalide."
+description = "Day=366 invalide (index base 0: cela ferait un 367e jour)."
 input = "1 366 1 7\n"
 expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-006"
-description = "Year=99, day=364 valide."
+description = "Year=99 non bissextile: day=364 valide (dernier index autorise)."
 input = "1 51052 1 7\n"
 expected_output = "7 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-007"
-description = "Year=99, day=365 invalide."
+description = "Year=99 non bissextile: day=365 invalide (depasse 0..364)."
 input = "1 51053 1 7\n"
 expected_output = "Invalid input\n"
 expected_code = 0
@@ -87,7 +94,7 @@ expected_code = 0
 
 [[case]]
 id = "CAL-013"
-description = "Year=100 centenaire non multiple de 400: day=365 invalide."
+description = "Year=100 centenaire non multiple de 400: day=365 invalide (year non bissextile -> 0..364)."
 input = "1 51565 1 11\n"
 expected_output = "Invalid input\n"
 expected_code = 0
@@ -108,14 +115,14 @@ expected_code = 0
 
 [[case]]
 id = "CAL-016"
-description = "Year=99999 non bissextile, day=364 valide."
+description = "Year=99999 non bissextile: day=364 valide (dernier index)."
 input = "1 51199852 1 13\n"
 expected_output = "13 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-017"
-description = "Year=99999 non bissextile, day=365 invalide."
+description = "Year=99999 non bissextile: day=365 invalide (depasse 0..364)."
 input = "1 51199853 1 13\n"
 expected_output = "Invalid input\n"
 expected_code = 0
@@ -129,14 +136,14 @@ expected_code = 0
 
 [[case]]
 id = "CAL-019"
-description = "Borne haute incluse: Year=100000 bissextile, day=365 valide."
+description = "Borne haute incluse: Year=100000 bissextile, day=365 valide (dernier index)."
 input = "1 51200365 1 17\n"
 expected_output = "17 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-020"
-description = "Year=100000, day=366 invalide."
+description = "Year=100000, day=366 invalide (index 367e jour inexistant)."
 input = "1 51200366 1 17\n"
 expected_output = "Invalid input\n"
 expected_code = 0
@@ -150,56 +157,56 @@ expected_code = 0
 
 [[case]]
 id = "CAL-022"
-description = "Year=400 multiple de 400: day=365 valide."
+description = "Year=400 multiple de 400: day=365 valide (annee bissextile -> 0..365)."
 input = "1 205165 1 19\n"
 expected_output = "19 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-023"
-description = "Year=400: day=366 invalide."
+description = "Year=400: day=366 invalide (meme en bissextile, max=365)."
 input = "1 205166 1 19\n"
 expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-024"
-description = "Year=1900 centenaire non multiple de 400: day=365 invalide."
+description = "Year=1900 centenaire non multiple de 400: day=365 invalide (non bissextile)."
 input = "1 973165 1 23\n"
 expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-025"
-description = "Year=1900: day=364 valide."
+description = "Year=1900: day=364 valide (dernier index sur annee non bissextile)."
 input = "1 973164 1 23\n"
 expected_output = "23 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-026"
-description = "Year=2000 multiple de 400: day=365 valide."
+description = "Year=2000 multiple de 400: day=365 valide (annee bissextile)."
 input = "1 1024365 1 29\n"
 expected_output = "29 \n"
 expected_code = 0
 
 [[case]]
 id = "CAL-027"
-description = "Year=2000: day=366 invalide."
+description = "Year=2000: day=366 invalide (max day=365 en bissextile)."
 input = "1 1024366 1 29\n"
 expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-028"
-description = "Year=2100 centenaire non multiple de 400: day=365 invalide."
+description = "Year=2100 centenaire non multiple de 400: day=365 invalide (non bissextile)."
 input = "1 1075565 1 31\n"
 expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-029"
-description = "Year=2400 multiple de 400: day=365 valide."
+description = "Year=2400 multiple de 400: day=365 valide (annee bissextile)."
 input = "1 1229165 1 37\n"
 expected_output = "37 \n"
 expected_code = 0
@@ -213,7 +220,7 @@ expected_code = 0
 
 [[case]]
 id = "CAL-031"
-description = "Year=2025 non bissextile: day=365 invalide."
+description = "Year=2025 non bissextile: day=365 invalide (depasse 0..364)."
 input = "1 1037165 1 41\n"
 expected_output = "Invalid input\n"
 expected_code = 0
