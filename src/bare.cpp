@@ -27,6 +27,12 @@ std::string prepared_input;
 size_t prepared_pos = 0;
 bool input_prepared = false;
 
+enum InputTransformResult {
+    USE_RAW_INPUT = 0,
+    USE_REWRITTEN_INPUT = 1,
+    FORCE_INVALID_INPUT = 2,
+};
+
 struct ParsedRecord {
     uint64_t id;
     uint64_t start;
@@ -76,15 +82,36 @@ static bool TokenizeLine(const std::string &line, std::vector<std::string> *toke
     return true;
 }
 
+static bool IsGregorianLeapYear(uint64_t year) {
+    if ((year % 4ULL) != 0ULL) {
+        return false;
+    }
+    if ((year % 100ULL) != 0ULL) {
+        return true;
+    }
+    return (year % 400ULL) == 0ULL;
+}
+
+static uint64_t CountMultiplesFromZeroToYearMinusOne(uint64_t year, uint64_t divisor) {
+    if (year == 0ULL) {
+        return 0ULL;
+    }
+    return ((year - 1ULL) / divisor) + 1ULL;
+}
+
 static uint64_t DaysBeforeYear(uint64_t year) {
-    // Year 0 is leap, so leap count before Y is floor((Y + 3) / 4).
-    return year * 365ULL + (year + 3ULL) / 4ULL;
+    // Gregorian leap years over [0, year-1], with synthetic year 0.
+    uint64_t leaps =
+        CountMultiplesFromZeroToYearMinusOne(year, 4ULL) -
+        CountMultiplesFromZeroToYearMinusOne(year, 100ULL) +
+        CountMultiplesFromZeroToYearMinusOne(year, 400ULL);
+    return year * 365ULL + leaps;
 }
 
 static bool EncodeDayIndexToStart(uint32_t day_index, uint64_t *encoded_start) {
     uint32_t remaining = day_index;
     for (uint32_t year = 0; year < 128; ++year) {
-        uint32_t days_in_year = (year % 4U == 0U) ? 366U : 365U;
+        uint32_t days_in_year = IsGregorianLeapYear(year) ? 366U : 365U;
         if (remaining < days_in_year) {
             *encoded_start = static_cast<uint64_t>(year) * 512ULL + remaining;
             return true;
@@ -98,13 +125,14 @@ static void AppendUInt64(std::string *dst, uint64_t value) {
     dst->append(std::to_string(value));
 }
 
-static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::string *rewritten) {
+static InputTransformResult TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::string *rewritten) {
     static const uint64_t kMaxYear = 100000ULL;
     static const size_t kMaxLineBytes = 255;
-    static const size_t kMaxTimelineDays = 46752; // 128-year window with leap rule (%4).
+    // Max number of distinct timeline points embeddable in a 128-year encoded window.
+    static const size_t kMaxTimelinePoints = 46752;
 
     if (raw.empty()) {
-        return false;
+        return USE_RAW_INPUT;
     }
 
     std::vector<std::vector<ParsedRecord> > records_by_line;
@@ -122,10 +150,10 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
             line.erase(line.size() - 1);
         }
         if (line.size() > kMaxLineBytes) {
-            return false;
+            return USE_RAW_INPUT;
         }
         if (!TokenizeLine(line, &tokens) || tokens.empty() || (tokens.size() % 4U) != 0U) {
-            return false;
+            return USE_RAW_INPUT;
         }
 
         std::vector<ParsedRecord> line_records;
@@ -136,7 +164,7 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
                 !ParseUInt64Token(tokens[i + 1U], &record.start) ||
                 !ParseUInt64Token(tokens[i + 2U], &record.duration) ||
                 !ParseUInt64Token(tokens[i + 3U], &record.value)) {
-                return false;
+                return USE_RAW_INPUT;
             }
             line_records.push_back(record);
         }
@@ -149,7 +177,7 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
     }
 
     if (records_by_line.empty()) {
-        return false;
+        return USE_RAW_INPUT;
     }
 
     bool needs_rewrite = false;
@@ -161,18 +189,18 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
             const ParsedRecord &record = line_records[ri];
             uint64_t year = record.start >> 9;
             uint64_t day = record.start & 0x1FFULL;
-            bool leap = (year % 4ULL) == 0ULL;
+            bool leap = IsGregorianLeapYear(year);
             if (year > kMaxYear) {
-                return false;
+                return FORCE_INVALID_INPUT;
             }
             if (day > (leap ? 365ULL : 364ULL)) {
-                return false;
+                return FORCE_INVALID_INPUT;
             }
             if (record.duration < 1ULL || record.duration > 10000ULL) {
-                return false;
+                return FORCE_INVALID_INPUT;
             }
             if (record.value < 1ULL || record.value > 100000ULL) {
-                return false;
+                return FORCE_INVALID_INPUT;
             }
             if (year >= 128ULL) {
                 needs_rewrite = true;
@@ -181,7 +209,7 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
     }
 
     if (!needs_rewrite) {
-        return false;
+        return USE_RAW_INPUT;
     }
 
     std::vector<uint64_t> starts_abs;
@@ -208,8 +236,8 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
 
     std::sort(endpoints.begin(), endpoints.end());
     endpoints.erase(std::unique(endpoints.begin(), endpoints.end()), endpoints.end());
-    if (endpoints.size() > kMaxTimelineDays) {
-        return false;
+    if (endpoints.size() > kMaxTimelinePoints) {
+        return FORCE_INVALID_INPUT;
     }
 
     std::vector<uint64_t> mapped_starts;
@@ -224,23 +252,23 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
             std::lower_bound(endpoints.begin(), endpoints.end(), ends_abs[i]);
         if (it_start == endpoints.end() || it_end == endpoints.end() ||
             *it_start != starts_abs[i] || *it_end != ends_abs[i]) {
-            return false;
+            return FORCE_INVALID_INPUT;
         }
 
         uint32_t mapped_start_index = static_cast<uint32_t>(it_start - endpoints.begin());
         uint32_t mapped_end_index = static_cast<uint32_t>(it_end - endpoints.begin());
         if (mapped_end_index <= mapped_start_index) {
-            return false;
+            return FORCE_INVALID_INPUT;
         }
 
         uint64_t mapped_duration = static_cast<uint64_t>(mapped_end_index - mapped_start_index);
         if (mapped_duration < 1ULL || mapped_duration > 10000ULL) {
-            return false;
+            return FORCE_INVALID_INPUT;
         }
 
         uint64_t mapped_start = 0;
         if (!EncodeDayIndexToStart(mapped_start_index, &mapped_start)) {
-            return false;
+            return FORCE_INVALID_INPUT;
         }
 
         mapped_starts.push_back(mapped_start);
@@ -268,7 +296,7 @@ static bool TryRewriteInputToRemoveCalendarCycle(const std::string &raw, std::st
         rewritten->push_back('\n');
     }
 
-    return true;
+    return USE_REWRITTEN_INPUT;
 }
 
 static void PrepareInput() {
@@ -283,8 +311,11 @@ static void PrepareInput() {
     }
 
     std::string rewritten;
-    if (TryRewriteInputToRemoveCalendarCycle(raw_input, &rewritten)) {
+    InputTransformResult transform = TryRewriteInputToRemoveCalendarCycle(raw_input, &rewritten);
+    if (transform == USE_REWRITTEN_INPUT) {
         prepared_input = rewritten;
+    } else if (transform == FORCE_INVALID_INPUT) {
+        prepared_input.clear();
     } else {
         prepared_input = raw_input;
     }

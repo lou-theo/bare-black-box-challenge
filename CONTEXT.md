@@ -143,8 +143,9 @@ Le champ `start` n'est pas une date texte, c'est un entier encodé:
 Règle observée pour valider `start`:
 
 1. `year` doit être dans `0..100000`.
-2. Si `year % 4 == 0` (année bissextile), alors `day <= 365`.
-3. Sinon, `day <= 364`.
+2. Une année est bissextile si `year % 4 == 0`, sauf les siècles (`year % 100 == 0`) qui ne sont pas bissextiles, sauf ceux divisibles par `400`.
+3. Si l'année est bissextile, alors `day <= 365`.
+4. Sinon, `day <= 364`.
 
 Exemple détaillé A (valide, année bissextile):
 
@@ -192,11 +193,12 @@ printf "1 2413 2 10 2 2560 1 20\n" | ./bin/bbr
 
 Résultat de campagne de tests bissextiles et bornes:
 
-1. `day=365` est accepté pour des années bissextiles testées, y compris `year=100000`.
-2. `day=365` est rejeté pour des années non bissextiles testées (ex: `year=99999`).
-3. `day=366` est rejeté.
-4. `year=100001` est rejeté (borne haute exclue).
-5. Les cas de planification séparés de 128 ans (ou plus) sont désormais distingués correctement (plus de chevauchement artificiel cyclique).
+1. Les règles bissextiles grégoriennes sont appliquées (ex: 1900/2100 non bissextiles, 2000/2400 bissextiles).
+2. `day=365` est accepté pour des années bissextiles testées, y compris `year=100000`.
+3. `day=365` est rejeté pour des années non bissextiles testées (ex: `year=99999`, `year=1900`).
+4. `day=366` est rejeté.
+5. `year=100001` est rejeté (borne haute exclue).
+6. Les cas de planification séparés de 128 ans (ou plus) sont désormais distingués correctement (plus de chevauchement artificiel cyclique).
 
 ## Remarque
 

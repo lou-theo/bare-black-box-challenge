@@ -1,5 +1,5 @@
 category = "calendar"
-category_description = "Validation du champ start (encodage year/day, bissextiles, borne annee <= 100000)."
+category_description = "Validation du champ start (encodage year/day, regles bissextiles gregoriennes, borne annee <= 100000)."
 
 [[case]]
 id = "CAL-001"
@@ -87,9 +87,9 @@ expected_code = 0
 
 [[case]]
 id = "CAL-013"
-description = "Year=100 bissextile, day=365 valide."
+description = "Year=100 centenaire non multiple de 400: day=365 invalide."
 input = "1 51565 1 11\n"
-expected_output = "11 \n"
+expected_output = "Invalid input\n"
 expected_code = 0
 
 [[case]]
@@ -145,5 +145,75 @@ expected_code = 0
 id = "CAL-021"
 description = "Borne haute exclue: Year=100001, day=0 invalide."
 input = "1 51200512 1 17\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-022"
+description = "Year=400 multiple de 400: day=365 valide."
+input = "1 205165 1 19\n"
+expected_output = "19 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-023"
+description = "Year=400: day=366 invalide."
+input = "1 205166 1 19\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-024"
+description = "Year=1900 centenaire non multiple de 400: day=365 invalide."
+input = "1 973165 1 23\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-025"
+description = "Year=1900: day=364 valide."
+input = "1 973164 1 23\n"
+expected_output = "23 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-026"
+description = "Year=2000 multiple de 400: day=365 valide."
+input = "1 1024365 1 29\n"
+expected_output = "29 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-027"
+description = "Year=2000: day=366 invalide."
+input = "1 1024366 1 29\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-028"
+description = "Year=2100 centenaire non multiple de 400: day=365 invalide."
+input = "1 1075565 1 31\n"
+expected_output = "Invalid input\n"
+expected_code = 0
+
+[[case]]
+id = "CAL-029"
+description = "Year=2400 multiple de 400: day=365 valide."
+input = "1 1229165 1 37\n"
+expected_output = "37 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-030"
+description = "Year=2024 multiple de 4 et non centenaire: day=365 valide."
+input = "1 1036653 1 41\n"
+expected_output = "41 \n"
+expected_code = 0
+
+[[case]]
+id = "CAL-031"
+description = "Year=2025 non bissextile: day=365 invalide."
+input = "1 1037165 1 41\n"
 expected_output = "Invalid input\n"
 expected_code = 0
