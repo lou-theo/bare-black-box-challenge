@@ -12,7 +12,7 @@ category_description = "Validation du champ start (year/day, index day sur base 
 id = "CAL-001"
 description = "Year=8 bissextile, day=365 valide."
 input = "1 4461 1 99\n"
-expected_output = "99 \n"
+expected_output = "1 99\n"
 expected_code = 0
 
 [[case]]
@@ -26,7 +26,7 @@ expected_code = 0
 id = "CAL-003"
 description = "Year=0 bissextile, day=365 valide."
 input = "1 365 1 7\n"
-expected_output = "7 \n"
+expected_output = "1 7\n"
 expected_code = 0
 
 [[case]]
@@ -47,7 +47,7 @@ expected_code = 0
 id = "CAL-006"
 description = "Year=99 non bissextile: day=364 valide (dernier index autorise)."
 input = "1 51052 1 7\n"
-expected_output = "7 \n"
+expected_output = "1 7\n"
 expected_code = 0
 
 [[case]]
@@ -61,14 +61,14 @@ expected_code = 0
 id = "CAL-008"
 description = "Year=100, day=0 valide."
 input = "1 51200 1 7\n"
-expected_output = "7 \n"
+expected_output = "1 7\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-009"
 description = "Year=96 bissextile, day=365 valide."
 input = "1 49517 1 9\n"
-expected_output = "9 \n"
+expected_output = "1 9\n"
 expected_code = 0
 
 [[case]]
@@ -82,14 +82,14 @@ expected_code = 0
 id = "CAL-011"
 description = "Borne basse: Year=0, day=0 valide."
 input = "1 0 1 11\n"
-expected_output = "11 \n"
+expected_output = "1 11\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-012"
 description = "Borne haute incluse: Year=99, day=0 valide."
 input = "1 50688 1 11\n"
-expected_output = "11 \n"
+expected_output = "1 11\n"
 expected_code = 0
 
 [[case]]
@@ -103,21 +103,21 @@ expected_code = 0
 id = "CAL-014"
 description = "Year=127, day=0 valide."
 input = "1 65024 1 11\n"
-expected_output = "11 \n"
+expected_output = "1 11\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-015"
 description = "Year=255, day=0 valide."
 input = "1 130560 1 11\n"
-expected_output = "11 \n"
+expected_output = "1 11\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-016"
 description = "Year=99999 non bissextile: day=364 valide (dernier index)."
 input = "1 51199852 1 13\n"
-expected_output = "13 \n"
+expected_output = "1 13\n"
 expected_code = 0
 
 [[case]]
@@ -131,14 +131,14 @@ expected_code = 0
 id = "CAL-018"
 description = "Borne haute incluse: Year=100000, day=0 valide."
 input = "1 51200000 1 17\n"
-expected_output = "17 \n"
+expected_output = "1 17\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-019"
 description = "Borne haute incluse: Year=100000 bissextile, day=365 valide (dernier index)."
 input = "1 51200365 1 17\n"
-expected_output = "17 \n"
+expected_output = "1 17\n"
 expected_code = 0
 
 [[case]]
@@ -159,7 +159,7 @@ expected_code = 0
 id = "CAL-022"
 description = "Year=400 multiple de 400: day=365 valide (annee bissextile -> 0..365)."
 input = "1 205165 1 19\n"
-expected_output = "19 \n"
+expected_output = "1 19\n"
 expected_code = 0
 
 [[case]]
@@ -180,14 +180,14 @@ expected_code = 0
 id = "CAL-025"
 description = "Year=1900: day=364 valide (dernier index sur annee non bissextile)."
 input = "1 973164 1 23\n"
-expected_output = "23 \n"
+expected_output = "1 23\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-026"
 description = "Year=2000 multiple de 400: day=365 valide (annee bissextile)."
 input = "1 1024365 1 29\n"
-expected_output = "29 \n"
+expected_output = "1 29\n"
 expected_code = 0
 
 [[case]]
@@ -208,14 +208,14 @@ expected_code = 0
 id = "CAL-029"
 description = "Year=2400 multiple de 400: day=365 valide (annee bissextile)."
 input = "1 1229165 1 37\n"
-expected_output = "37 \n"
+expected_output = "1 37\n"
 expected_code = 0
 
 [[case]]
 id = "CAL-030"
 description = "Year=2024 multiple de 4 et non centenaire: day=365 valide."
 input = "1 1036653 1 41\n"
-expected_output = "41 \n"
+expected_output = "1 41\n"
 expected_code = 0
 
 [[case]]

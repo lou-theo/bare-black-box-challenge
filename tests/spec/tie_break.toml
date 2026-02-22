@@ -1,0 +1,80 @@
+category = "tie_break"
+category_description = "Validation des egalites: toutes les solutions optimales sont affichees, separees par OR, dans un ordre deterministe."
+
+[[case]]
+id = "TIE-001"
+description = "Egalite sur un seul intervalle: les deux possibilites sont affichees, triees par ID minimal."
+input = """
+10 0 5 10
+1 0 5 10
+"""
+expected_output = "1 10\nOR\n10 10\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-002"
+description = "Meme premier ID: les possibilites sont ordonnees par les IDs suivants."
+input = """
+1 0 2 5
+9 2 2 5
+8 2 2 5
+"""
+expected_output = "1 5\n8 10\nOR\n1 5\n9 10\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-003"
+description = "Meme premier et deuxieme ID: ordre deterministe au troisieme ID."
+input = """
+1 0 1 1
+4 1 1 1
+6 2 1 1
+7 2 1 1
+"""
+expected_output = "1 1\n4 2\n6 3\nOR\n1 1\n4 2\n7 3\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-004"
+description = "Egalite entre un intervalle unique et une combinaison: toutes les possibilites sont affichees."
+input = """
+5 0 10 10
+1 0 4 4
+9 4 6 6
+"""
+expected_output = "1 4\n9 10\nOR\n5 10\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-005"
+description = "Entree non triee: toutes les possibilites tie sont stables et deterministes."
+input = """
+9 4 2 5
+1 0 2 5
+3 4 2 5
+"""
+expected_output = "1 5\n3 10\nOR\n1 5\n9 10\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-006"
+description = "Departage sous reecriture calendrier (year>=128) avec enumeration de toutes les possibilites."
+input = """
+1 0 1 5
+8 65536 1 5
+3 65536 1 5
+"""
+expected_output = "1 5\n3 10\nOR\n1 5\n8 10\n"
+expected_code = 0
+
+[[case]]
+id = "TIE-007"
+description = "Trois possibilites optimales: enumeration complete et ordre deterministe par plus petit ID."
+input = """
+3 0 2 5
+1 0 2 5
+2 0 2 5
+9 2 2 5
+"""
+expected_output = "1 5\n9 10\nOR\n2 5\n9 10\nOR\n3 5\n9 10\n"
+expected_code = 0

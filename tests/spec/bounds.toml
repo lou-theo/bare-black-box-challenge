@@ -33,12 +33,12 @@ expected_code = 0
 id = "BND-005"
 description = "Duration=10000 valide."
 input = "1 0 10000 7\n"
-expected_output = "7 \n"
+expected_output = "1 7\n"
 expected_code = 0
 
 [[case]]
 id = "BND-006"
 description = "Value=100000 valide."
 input = "1 0 1 100000\n"
-expected_output = "100000 \n"
+expected_output = "1 100000\n"
 expected_code = 0
