@@ -73,7 +73,7 @@ Modifier la logique 6502 embarquee pour produire directement la nouvelle sortie.
 | E2 | Ajouter des tests scheduling cibles | Couvrir l'exemple fourni + tri chrono + cumul multi-ligne + cas `year>=128` + egalites avec separation `OR` | FAIT | Nouveaux cas `SCH-*` | Les cas couvrent les besoins metier de la nouvelle sortie |
 | E3 | Nettoyer les attentes obsoletes | Supprimer/remplacer les attentes valides au format scalaire | FAIT | Specs coherentes | Aucune attente valide au format ancien |
 | E4 | Verifier la direction | Executer la suite modifiee avant implementation | FAIT | Rapport d'execution | Les invalides restent OK, les valides migres echouent tant que non implemente |
-| E5 | GO implementation (Option C) | Demarrer le dev en modifiant la logique 6502 (blob `src/ram.h`) apres validation des tests | A_FAIRE | Decision explicite | GO utilisateur obtenu |
+| E5 | GO implementation (Option C) | Demarrer le dev en modifiant la logique 6502 (blob `src/ram.h`) apres validation des tests | FAIT | Implementation livree | Nouvelle sortie + ties `OR` operationnels et tests verts |
 
 ## Modifications de tests prevues (E1 + E2)
 
@@ -148,6 +148,7 @@ Expected:
 - Contrainte d'implementation confirmee: pas de source assembleur 6502 originale; s'appuyer au maximum sur `src/ram.h` et valider par tests de non-regression.
 - Format de sortie valide confirme: `"<id> <cumul>\n"` sans espace final, newline finale obligatoire.
 - En cas d'egalite, format valide confirme: enumeration de toutes les solutions optimales avec separateur `OR\n`.
+- Mise en oeuvre E5: le coeur 6502 (`src/ram.h`) reste la source de verite pour validation d'entree et valeur optimale; la reconstruction/l'ordonnancement/l'enumeration des solutions optimales est realisee cote hote C++.
 
 ## Journal d'execution
 
@@ -161,6 +162,7 @@ Expected:
 | 2026-02-22 | E2 | Creation d'un fichier de spec dedie tie-break | `tests/spec/tie_break.toml` cree avec `TIE-001..TIE-007` | Cas cibles pour enumeration complete des ties, ordre deterministe, et contexte `year>=128` |
 | 2026-02-22 | E2 | Reprise de la regle d'egalite | Les specs tie-break et `SCH-011` attendent maintenant toutes les solutions optimales separees par `OR` | Ordonnancement deterministe des possibilites explicite dans le plan |
 | 2026-02-22 | E4 | Execution `make test` apres regle `OR` | `27/69` passes, `42` echecs | Direction confirmee avec nouveau contrat: invalides OK, valides migres en echec avant implementation |
+| 2026-02-22 | E5 | Implementation programme | `src/bare.cpp` modifie: capture sortie 6502, reconstruction des solutions optimales, enumeration des ties avec `OR` | `make test`: `69/69` passes |
 
 ## Criteres de fin de phase "tests"
 
