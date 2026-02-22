@@ -148,7 +148,7 @@ Expected:
 - Contrainte d'implementation confirmee: pas de source assembleur 6502 originale; s'appuyer au maximum sur `src/ram.h` et valider par tests de non-regression.
 - Format de sortie valide confirme: `"<id> <cumul>\n"` sans espace final, newline finale obligatoire.
 - En cas d'egalite, format valide confirme: enumeration de toutes les solutions optimales avec separateur `OR\n`.
-- Mise en oeuvre E5: le coeur 6502 (`src/ram.h`) reste la source de verite pour validation d'entree et valeur optimale; la reconstruction/l'ordonnancement/l'enumeration des solutions optimales est realisee cote hote C++.
+- Mise en oeuvre E5 (version finale): implementation **C stricte**. La production de la sortie (chemins optimaux, cumul, enumeration des ties, separateur `OR`) est realisee dans le coeur 6502 (`src/ram.h`). Le programme hote C++ n'effectue plus de reconstruction de solution optimale.
 
 ## Journal d'execution
 
@@ -162,7 +162,9 @@ Expected:
 | 2026-02-22 | E2 | Creation d'un fichier de spec dedie tie-break | `tests/spec/tie_break.toml` cree avec `TIE-001..TIE-007` | Cas cibles pour enumeration complete des ties, ordre deterministe, et contexte `year>=128` |
 | 2026-02-22 | E2 | Reprise de la regle d'egalite | Les specs tie-break et `SCH-011` attendent maintenant toutes les solutions optimales separees par `OR` | Ordonnancement deterministe des possibilites explicite dans le plan |
 | 2026-02-22 | E4 | Execution `make test` apres regle `OR` | `27/69` passes, `42` echecs | Direction confirmee avec nouveau contrat: invalides OK, valides migres en echec avant implementation |
-| 2026-02-22 | E5 | Implementation programme | `src/bare.cpp` modifie: capture sortie 6502, reconstruction des solutions optimales, enumeration des ties avec `OR` | `make test`: `69/69` passes |
+| 2026-02-22 | E5 | Implementation programme (iteration intermediaire) | Sortie fonctionnelle via reconstruction cote hote C++ (solution non stricte) | Base de validation utile, mais non conforme a la demande C stricte |
+| 2026-02-22 | E5 | Rework C stricte sur `src/ram.h` | Reverse engineering + patchs 6502: stockage IDs/valeurs, exploration des chemins optimaux, cumul, ties complets avec `OR`, ordre deterministe | `make test`: `69/69` passes |
+| 2026-02-22 | E5 | Nettoyage hote C++ | Suppression du fallback de reconstruction dans `src/bare.cpp` pour forcer la sortie issue du coeur 6502 | `make test`: `69/69` passes |
 
 ## Criteres de fin de phase "tests"
 
